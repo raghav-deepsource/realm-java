@@ -188,17 +188,42 @@ abstract class BaseRealm implements Closeable {
      * obtain a Realm instance. In most cases it is better to use {@link RealmChangeListener}s to be notified
      * about changes to the Realm on a given thread than it is to use this method.
      *
-     * @throws IllegalStateException if attempting to refresh from within a transaction.
+     * @throws IllegalStateException if attempting to refresh from within a transaction or from a thread other than the one that created the Realm.
      * @throws RealmException if called from the UI thread after opting out via {@link RealmConfiguration.Builder#allowQueriesOnUiThread(boolean)}.
      */
     public void refresh() {
-        checkIfValid();
+        refreshInternal(true);
+    }
+
+    /**
+     * Similar to {@link #refresh()} but can be called from any thread.
+     * <p>
+     * WARNING: Calling this on a thread with async queries will turn those queries into synchronous queries.
+     * This means this method will throw a {@link RealmException} if
+     * {@link RealmConfiguration.Builder#allowQueriesOnUiThread(boolean)} was used with {@code true} to
+     * obtain a Realm instance. In most cases it is better to use {@link RealmChangeListener}s to be notified
+     * about changes to the Realm on a given thread than it is to use this method.
+     *
+     * @throws IllegalStateException if attempting to refresh from within a transaction.
+     * @throws RealmException if called from the UI thread after opting out via {@link RealmConfiguration.Builder#allowQueriesOnUiThread(boolean)}.
+     */
+    public void unsafeRefresh() {
+        refreshInternal(false);
+    }
+
+    private void refreshInternal(boolean safeRefresh) {
+        checkIfValid(safeRefresh);
         checkAllowQueriesOnUiThread();
 
-        if (isInTransaction()) {
+        if (sharedRealm.isInTransaction()) {
             throw new IllegalStateException("Cannot refresh a Realm instance inside a transaction.");
         }
-        sharedRealm.refresh();
+
+        if (safeRefresh) {
+            sharedRealm.refresh();
+        } else {
+            sharedRealm.unsafeRefresh();
+        }
     }
 
     /**
@@ -509,14 +534,28 @@ abstract class BaseRealm implements Closeable {
      * Checks if a Realm's underlying resources are still available or not getting accessed from the wrong thread.
      */
     protected void checkIfValid() {
+        checkIfValid(true);
+    }
+
+    /**
+     * Checks if a Realm's underlying resources are still available or not getting accessed from the wrong thread.
+     * @param shouldCheckForIncorrectThread whether or not to perform an incorrect thread check
+     */
+    protected void checkIfValid(boolean shouldCheckForIncorrectThread) {
         if (sharedRealm == null || sharedRealm.isClosed()) {
             throw new IllegalStateException(BaseRealm.CLOSED_REALM_MESSAGE);
         }
 
         // Checks if we are in the right thread.
-        if (!frozen && threadId != Thread.currentThread().getId()) {
-            throw new IllegalStateException(BaseRealm.INCORRECT_THREAD_MESSAGE);
+        if (!frozen) {
+            if (shouldCheckForIncorrectThread && isIncorrectThread()) {
+                throw new IllegalStateException(BaseRealm.INCORRECT_THREAD_MESSAGE);
+            }
         }
+    }
+
+    private boolean isIncorrectThread() {
+        return threadId != Thread.currentThread().getId();
     }
 
     /**
@@ -553,6 +592,7 @@ abstract class BaseRealm implements Closeable {
      * Checks if the Realm is valid and in a transaction.
      */
     protected void checkIfValidAndInTransaction() {
+        checkIfValid();
         if (!isInTransaction()) {
             throw new IllegalStateException(NOT_IN_TRANSACTION_MESSAGE);
         }

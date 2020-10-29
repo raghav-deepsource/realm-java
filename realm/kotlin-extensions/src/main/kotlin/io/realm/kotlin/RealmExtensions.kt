@@ -136,8 +136,8 @@ suspend fun Realm.executeTransactionAwait(
         }
     }
 
-    // force refresh because we risk fetching stale data from other realms
-    refresh()
+    // Force unsafe refresh as we might be on a different thread and because we risk fetching stale data from other realms
+    unsafeRefresh()
 }
 
 /**

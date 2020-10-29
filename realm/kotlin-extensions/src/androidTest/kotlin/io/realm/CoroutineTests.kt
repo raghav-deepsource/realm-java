@@ -451,6 +451,27 @@ class CoroutineTests {
     }
 
     @Test
+    fun executeTransactionAwait_multithreadDispatcher() {
+        val countDownLatch = CountDownLatch(1)
+
+        CoroutineScope(Dispatchers.Default).launch {
+            Realm.getInstance(configuration).use { realmInstance ->
+                assertEquals(0, realmInstance.where<SimpleClass>().findAll().size)
+
+                realmInstance.executeTransactionAwait(testDispatcher) { transactionRealm ->
+                    val simpleObject = SimpleClass().apply { name = "simpleName" }
+                    transactionRealm.insert(simpleObject)
+                }
+                assertEquals(1, realmInstance.where<SimpleClass>().findAll().size)
+
+                countDownLatch.countDown()
+            }
+        }
+
+        TestHelper.awaitOrFail(countDownLatch)
+    }
+
+    @Test
     fun executeTransactionAwait_cancelCoroutineWithMultipleTransactions() {
         val upperBound = 10
         var realmInstance: Realm? = null

@@ -181,6 +181,15 @@ JNIEXPORT void JNICALL Java_io_realm_internal_OsSharedRealm_nativeRefresh(JNIEnv
     CATCH_STD()
 }
 
+JNIEXPORT void JNICALL Java_io_realm_internal_OsSharedRealm_nativeUnsafeRefresh(JNIEnv* env, jclass, jlong shared_realm_ptr)
+{
+    auto& shared_realm = *(reinterpret_cast<SharedRealm*>(shared_realm_ptr));
+    try {
+        shared_realm->unsafe_refresh();
+    }
+    CATCH_STD()
+}
+
 JNIEXPORT jlongArray JNICALL Java_io_realm_internal_OsSharedRealm_nativeGetVersionID(JNIEnv* env, jclass,
                                                                                    jlong shared_realm_ptr)
 {

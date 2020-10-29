@@ -360,6 +360,13 @@ public final class OsSharedRealm implements Closeable, NativeObject {
         nativeRefresh(nativePtr);
     }
 
+    public void unsafeRefresh() {
+        if (isFrozen()) {
+            throw new IllegalStateException("It is not possible to unsafely refresh frozen Realms.");
+        }
+        nativeUnsafeRefresh(nativePtr);
+    }
+
     public OsSharedRealm.VersionID getVersionID() {
         long[] versionId = nativeGetVersionID(nativePtr);
         if (versionId == null) {
@@ -589,6 +596,8 @@ public final class OsSharedRealm implements Closeable, NativeObject {
     private static native boolean nativeIsEmpty(long nativeSharedRealmPtr);
 
     private static native void nativeRefresh(long nativeSharedRealmPtr);
+
+    private static native void nativeUnsafeRefresh(long nativeSharedRealmPtr);
 
     private static native long[] nativeGetVersionID(long nativeSharedRealmPtr);
 

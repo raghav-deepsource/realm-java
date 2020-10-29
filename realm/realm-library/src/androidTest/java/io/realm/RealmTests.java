@@ -186,7 +186,7 @@ public class RealmTests {
         for (int i = 0; i < objects; ++i) {
             AllTypes allTypes = realm.createObject(AllTypes.class);
             allTypes.setColumnBoolean((i % 3) == 0);
-            allTypes.setColumnBinary(new byte[] {1, 2, 3});
+            allTypes.setColumnBinary(new byte[]{1, 2, 3});
             allTypes.setColumnDate(new Date());
             allTypes.setColumnDouble(Math.PI);
             allTypes.setColumnFloat(1.234567F + i);
@@ -383,7 +383,7 @@ public class RealmTests {
             }
 
             try {
-                realm.where(AllTypes.class).equalTo(columnData.get(i), new byte[] {1, 2, 3}).findAll();
+                realm.where(AllTypes.class).equalTo(columnData.get(i), new byte[]{1, 2, 3}).findAll();
                 if (i != 6) {
                     fail("Realm.where should fail with illegal argument");
                 }
@@ -994,7 +994,9 @@ public class RealmTests {
         try {
             realm = Realm.getInstance(configFactory.createConfiguration());
         } finally {
-            if (realm != null) { realm.close(); }
+            if (realm != null) {
+                realm.close();
+            }
         }
 
         try {
@@ -1408,14 +1410,14 @@ public class RealmTests {
         allTypes.setColumnDouble(1D);
         allTypes.setColumnBoolean(true);
         allTypes.setColumnDate(date);
-        allTypes.setColumnBinary(new byte[] {1, 2, 3});
+        allTypes.setColumnBinary(new byte[]{1, 2, 3});
         allTypes.setColumnDecimal128(new Decimal128(new BigDecimal("12345")));
         allTypes.setColumnObjectId(new ObjectId(TestHelper.generateObjectIdHexString(7)));
         allTypes.setColumnRealmObject(dog);
         allTypes.setColumnRealmList(list);
 
         allTypes.setColumnStringList(new RealmList<String>("1"));
-        allTypes.setColumnBinaryList(new RealmList<byte[]>(new byte[] {1}));
+        allTypes.setColumnBinaryList(new RealmList<byte[]>(new byte[]{1}));
         allTypes.setColumnBooleanList(new RealmList<Boolean>(true));
         allTypes.setColumnLongList(new RealmList<Long>(1L));
         allTypes.setColumnDoubleList(new RealmList<Double>(1D));
@@ -1447,7 +1449,7 @@ public class RealmTests {
         assertEquals(1, realmTypes.getColumnBooleanList().size());
         assertEquals(true, realmTypes.getColumnBooleanList().get(0));
         assertEquals(1, realmTypes.getColumnBinaryList().size());
-        assertArrayEquals(new byte[] {1}, realmTypes.getColumnBinaryList().get(0));
+        assertArrayEquals(new byte[]{1}, realmTypes.getColumnBinaryList().get(0));
         assertEquals(1, realmTypes.getColumnLongList().size());
         assertEquals((Long) 1L, realmTypes.getColumnLongList().get(0));
         assertEquals(1, realmTypes.getColumnDoubleList().size());
@@ -1611,7 +1613,7 @@ public class RealmTests {
 
     @Test
     public void copyToRealm_duplicatedPrimaryKeyThrows() {
-        final String[] PRIMARY_KEY_TYPES = { "String", "BoxedLong", "long" };
+        final String[] PRIMARY_KEY_TYPES = {"String", "BoxedLong", "long"};
         for (String className : PRIMARY_KEY_TYPES) {
             String expectedKey = null;
             try {
@@ -1642,7 +1644,7 @@ public class RealmTests {
                 fail("Null value as primary key already exists, but wasn't detected correctly");
             } catch (RealmPrimaryKeyConstraintException expected) {
                 assertTrue("Exception message is: " + expected.getMessage(),
-                        expected.getMessage().contains("with an existing primary key value '"+ expectedKey +"'"));
+                        expected.getMessage().contains("with an existing primary key value '" + expectedKey + "'"));
             } finally {
                 realm.cancelTransaction();
             }
@@ -1901,14 +1903,14 @@ public class RealmTests {
                 obj.setColumnFloat(1.23F);
                 obj.setColumnDouble(1.234D);
                 obj.setColumnBoolean(false);
-                obj.setColumnBinary(new byte[] {1, 2, 3});
+                obj.setColumnBinary(new byte[]{1, 2, 3});
                 obj.setColumnDate(new Date(1000));
                 obj.setColumnRealmObject(new DogPrimaryKey(1, "Dog1"));
                 obj.setColumnRealmList(new RealmList<DogPrimaryKey>(new DogPrimaryKey(2, "Dog2")));
                 obj.setColumnBoxedBoolean(true);
                 obj.setColumnStringList(new RealmList<>("1"));
                 obj.setColumnBooleanList(new RealmList<>(false));
-                obj.setColumnBinaryList(new RealmList<>(new byte[] {1}));
+                obj.setColumnBinaryList(new RealmList<>(new byte[]{1}));
                 obj.setColumnLongList(new RealmList<>(1L));
                 obj.setColumnDoubleList(new RealmList<>(1D));
                 obj.setColumnFloatList(new RealmList<>(1F));
@@ -1921,14 +1923,14 @@ public class RealmTests {
                 obj2.setColumnFloat(2.23F);
                 obj2.setColumnDouble(2.234D);
                 obj2.setColumnBoolean(true);
-                obj2.setColumnBinary(new byte[] {2, 3, 4});
+                obj2.setColumnBinary(new byte[]{2, 3, 4});
                 obj2.setColumnDate(new Date(2000));
                 obj2.setColumnRealmObject(new DogPrimaryKey(3, "Dog3"));
                 obj2.setColumnRealmList(new RealmList<DogPrimaryKey>(new DogPrimaryKey(4, "Dog4")));
                 obj2.setColumnBoxedBoolean(false);
                 obj2.setColumnStringList(new RealmList<>("2", "3"));
                 obj2.setColumnBooleanList(new RealmList<>(true, false));
-                obj2.setColumnBinaryList(new RealmList<>(new byte[] {2}, new byte[] {3}));
+                obj2.setColumnBinaryList(new RealmList<>(new byte[]{2}, new byte[]{3}));
                 obj2.setColumnLongList(new RealmList<>(2L, 3L));
                 obj2.setColumnDoubleList(new RealmList<>(2D, 3D));
                 obj2.setColumnFloatList(new RealmList<>(2F, 3F));
@@ -1946,7 +1948,7 @@ public class RealmTests {
         assertEquals(2.23F, obj.getColumnFloat(), 0);
         assertEquals(2.234D, obj.getColumnDouble(), 0);
         assertEquals(true, obj.isColumnBoolean());
-        assertArrayEquals(new byte[] {2, 3, 4}, obj.getColumnBinary());
+        assertArrayEquals(new byte[]{2, 3, 4}, obj.getColumnBinary());
         assertEquals(new Date(2000), obj.getColumnDate());
         assertEquals("Dog3", obj.getColumnRealmObject().getName());
         assertEquals(1, obj.getColumnRealmList().size());
@@ -1959,8 +1961,8 @@ public class RealmTests {
         assertEquals(true, obj.getColumnBooleanList().get(0));
         assertEquals(false, obj.getColumnBooleanList().get(1));
         assertEquals(2, obj.getColumnBinaryList().size());
-        assertArrayEquals(new byte[] {2}, obj.getColumnBinaryList().get(0));
-        assertArrayEquals(new byte[] {3}, obj.getColumnBinaryList().get(1));
+        assertArrayEquals(new byte[]{2}, obj.getColumnBinaryList().get(0));
+        assertArrayEquals(new byte[]{3}, obj.getColumnBinaryList().get(1));
         assertEquals(2, obj.getColumnLongList().size());
         assertEquals((Long) 2L, obj.getColumnLongList().get(0));
         assertEquals((Long) 3L, obj.getColumnLongList().get(1));
@@ -2024,7 +2026,7 @@ public class RealmTests {
                 obj.setColumnFloat(1.23F);
                 obj.setColumnDouble(1.234D);
                 obj.setColumnBoolean(false);
-                obj.setColumnBinary(new byte[] {1, 2, 3});
+                obj.setColumnBinary(new byte[]{1, 2, 3});
                 obj.setColumnDate(new Date(1000));
                 obj.setColumnRealmObject(new DogPrimaryKey(1, "Dog1"));
                 obj.setColumnRealmList(new RealmList<DogPrimaryKey>(new DogPrimaryKey(2, "Dog2")));
@@ -2496,88 +2498,107 @@ public class RealmTests {
         try {
             realm.createObject(AllTypes.class);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         try {
             realm.copyToRealm(t);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         try {
             realm.copyToRealm(ts);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         try {
             realm.copyToRealmOrUpdate(t);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         try {
             realm.copyToRealmOrUpdate(ts);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         try {
             realm.delete(AllTypes.class);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         try {
             realm.deleteAll();
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
 
         try {
             realm.createObjectFromJson(AllTypesPrimaryKey.class, jsonObj);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         try {
             realm.createObjectFromJson(AllTypesPrimaryKey.class, jsonObjStr);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             try {
                 realm.createObjectFromJson(NoPrimaryKeyNullTypes.class, jsonObjStream);
                 fail();
-            } catch (IllegalStateException expected) {}
+            } catch (IllegalStateException expected) {
+            }
         }
         try {
             realm.createOrUpdateObjectFromJson(AllTypesPrimaryKey.class, jsonObj);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         try {
             realm.createOrUpdateObjectFromJson(AllTypesPrimaryKey.class, jsonObjStr);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             try {
                 realm.createOrUpdateObjectFromJson(AllTypesPrimaryKey.class, jsonObjStream2);
                 fail();
-            } catch (IllegalStateException expected) {}
+            } catch (IllegalStateException expected) {
+            }
         }
 
         try {
             realm.createAllFromJson(AllTypesPrimaryKey.class, jsonArr);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         try {
             realm.createAllFromJson(AllTypesPrimaryKey.class, jsonArrStr);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             try {
                 realm.createAllFromJson(NoPrimaryKeyNullTypes.class, jsonArrStream);
                 fail();
-            } catch (IllegalStateException expected) {}
+            } catch (IllegalStateException expected) {
+            }
         }
         try {
             realm.createOrUpdateAllFromJson(AllTypesPrimaryKey.class, jsonArr);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         try {
             realm.createOrUpdateAllFromJson(AllTypesPrimaryKey.class, jsonArrStr);
             fail();
-        } catch (IllegalStateException expected) {}
+        } catch (IllegalStateException expected) {
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             try {
                 realm.createOrUpdateAllFromJson(AllTypesPrimaryKey.class, jsonArrStream2);
                 fail();
-            } catch (IllegalStateException expected) {}
+            } catch (IllegalStateException expected) {
+            }
         }
     }
 
@@ -3010,7 +3031,7 @@ public class RealmTests {
 
             obj.setFieldStringList(new RealmList<>("2", "3"));
             obj.setFieldBooleanList(new RealmList<>(true, false));
-            obj.setFieldBinaryList(new RealmList<>(new byte[] {2}, new byte[] {3}));
+            obj.setFieldBinaryList(new RealmList<>(new byte[]{2}, new byte[]{3}));
             obj.setFieldLongList(new RealmList<>(2L, 3L));
             obj.setFieldIntegerList(new RealmList<>(2, 3));
             obj.setFieldShortList(new RealmList<>((short) 2, (short) 3));
@@ -3048,8 +3069,8 @@ public class RealmTests {
         assertEquals(true, managedObj.getFieldBooleanList().get(0));
         assertEquals(false, managedObj.getFieldBooleanList().get(1));
         assertEquals(2, managedObj.getFieldBinaryList().size());
-        assertArrayEquals(new byte[] {2}, managedObj.getFieldBinaryList().get(0));
-        assertArrayEquals(new byte[] {3}, managedObj.getFieldBinaryList().get(1));
+        assertArrayEquals(new byte[]{2}, managedObj.getFieldBinaryList().get(0));
+        assertArrayEquals(new byte[]{3}, managedObj.getFieldBinaryList().get(1));
         assertEquals(2, managedObj.getFieldLongList().size());
         assertEquals((Long) 2L, managedObj.getFieldLongList().get(0));
         assertEquals((Long) 3L, managedObj.getFieldLongList().get(1));
@@ -3094,7 +3115,7 @@ public class RealmTests {
             obj.setFieldDouble(DefaultValueOfField.FIELD_DOUBLE_DEFAULT_VALUE + 1);
             obj.setFieldBoolean(!DefaultValueOfField.FIELD_BOOLEAN_DEFAULT_VALUE);
             obj.setFieldDate(new Date(DefaultValueOfField.FIELD_DATE_DEFAULT_VALUE.getTime() + 1));
-            obj.setFieldBinary(new byte[] {(byte) (DefaultValueOfField.FIELD_BINARY_DEFAULT_VALUE[0] - 1)});
+            obj.setFieldBinary(new byte[]{(byte) (DefaultValueOfField.FIELD_BINARY_DEFAULT_VALUE[0] - 1)});
 
             final RandomPrimaryKey fieldObjectValue = new RandomPrimaryKey();
             fieldObjectValue.setFieldInt(RandomPrimaryKey.FIELD_INT_DEFAULT_VALUE + 1);
@@ -3108,7 +3129,7 @@ public class RealmTests {
 
             obj.setFieldStringList(new RealmList<>("2", "3"));
             obj.setFieldBooleanList(new RealmList<>(true, false));
-            obj.setFieldBinaryList(new RealmList<>(new byte[] {2}, new byte[] {3}));
+            obj.setFieldBinaryList(new RealmList<>(new byte[]{2}, new byte[]{3}));
             obj.setFieldLongList(new RealmList<>(2L, 3L));
             obj.setFieldIntegerList(new RealmList<>(2, 3));
             obj.setFieldShortList(new RealmList<>((short) 2, (short) 3));
@@ -3148,8 +3169,8 @@ public class RealmTests {
         assertEquals(true, managedObj.getFieldBooleanList().get(0));
         assertEquals(false, managedObj.getFieldBooleanList().get(1));
         assertEquals(2, managedObj.getFieldBinaryList().size());
-        assertArrayEquals(new byte[] {2}, managedObj.getFieldBinaryList().get(0));
-        assertArrayEquals(new byte[] {3}, managedObj.getFieldBinaryList().get(1));
+        assertArrayEquals(new byte[]{2}, managedObj.getFieldBinaryList().get(0));
+        assertArrayEquals(new byte[]{3}, managedObj.getFieldBinaryList().get(1));
         assertEquals(2, managedObj.getFieldLongList().size());
         assertEquals((Long) 2L, managedObj.getFieldLongList().get(0));
         assertEquals((Long) 3L, managedObj.getFieldLongList().get(1));
@@ -3872,7 +3893,8 @@ public class RealmTests {
         Realm realm = Realm.getInstance(realmConfig);
         Thread thread = new Thread(() -> {
             try {
-                realm.removeChangeListener(object -> {});
+                realm.removeChangeListener(object -> {
+                });
                 fail("Should not be able to invoke removeChangeListener");
             } catch (IllegalStateException ignored) {
             } finally {
@@ -4715,7 +4737,8 @@ public class RealmTests {
                     @Override
                     public void run() {
                         Realm realm = Realm.getInstance(config);
-                        realm.executeTransaction(bgRealm -> { });
+                        realm.executeTransaction(bgRealm -> {
+                        });
                         realm.close();
                     }
                 };
@@ -4818,5 +4841,50 @@ public class RealmTests {
             fail();
         } catch (IllegalStateException ignore) {
         }
+    }
+
+    @Test
+    public void checkRefresh() {
+        realm.refresh();
+    }
+
+    @Test
+    public void refresh_throws() {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    realm.refresh();
+                    fail("Calling refresh from a different thread than the one that created the Realm should crash.");
+                } catch (IllegalStateException exception) {
+                    assertTrue(exception.getMessage().toLowerCase().contains("incorrect thread"));
+                    countDownLatch.countDown();
+                }
+            }
+        }).start();
+
+        TestHelper.awaitOrFail(countDownLatch);
+    }
+
+    @Test
+    public void unsafeRefresh() {
+        realm.unsafeRefresh();
+    }
+
+    @Test
+    public void unsafeRefresh_fromDifferentThread() {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                realm.unsafeRefresh();
+                countDownLatch.countDown();
+            }
+        }).start();
+
+        TestHelper.awaitOrFail(countDownLatch);
     }
 }
